@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --text: #FBBF24;
+  --input-bg: #1F2937;
+}
+
+:root.light {
+  --background: #FFFFFF;
+  --text: #000000;
+  --input-bg: #E5E7EB;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+input, select {
+  background-color: var(--input-bg);
+  color: var(--text);
+}
+
+html {
+  scroll-behavior: smooth;
+}
