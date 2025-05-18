@@ -149,6 +149,7 @@ const Home = () => {
           </motion.div>
         </motion.div>
       </motion.section>
+      
 
       {/* Features Section */}
       <motion.section
@@ -291,3 +292,6 @@ const Home = () => {
 };
 
 export default Home;
+
+
+

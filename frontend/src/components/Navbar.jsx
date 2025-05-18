@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';  // Fixed import
 import { FaHome, FaSignInAlt, FaSignOutAlt, FaUserPlus, FaPlusCircle, FaTachometerAlt, FaBars, FaTimes, FaUsers } from 'react-icons/fa';
 
 const Navbar = () => {
@@ -9,15 +9,23 @@ const Navbar = () => {
   const token = localStorage.getItem('token');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   let isAdmin = false;
+  let userEmail = '';
+  const ADMIN_EMAIL = 'admin@example.com'; // Set your actual admin email here
 
-  // Validate token and determine admin status
   if (token) {
     try {
       const decoded = jwtDecode(token);
-      isAdmin = decoded.role === 'admin';
+      console.log("Decoded token:", decoded); // Debugging output
+
+      // Adjust these keys based on your token's actual structure:
+      isAdmin = decoded.role === 'admin'; 
+      userEmail = decoded.email || '';
+
+      // Optional: You can remove the email check if role is enough
+      // isAdmin = decoded.role === 'admin' && userEmail === ADMIN_EMAIL;
+
     } catch (error) {
       console.error('Error decoding token:', error);
-      // Only clear tokens and redirect if not already on login page
       if (window.location.pathname !== '/login') {
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
@@ -50,14 +58,14 @@ const Navbar = () => {
           className="text-3xl font-extrabold tracking-tight hover:text-yellow-300 transition duration-300 flex items-center"
           onClick={() => setIsMenuOpen(false)}
         >
-          <FaUsers className="mr-2" /> Quiz App
+          <FaUsers className="mr-2" /> Quiz Master
         </Link>
         <div className="hidden md:flex space-x-6 items-center">
           <a
             href="#home"
             className="flex items-center hover:text-yellow-300 transition duration-300 text-lg"
             onClick={(e) => {
-              e.preventDefault(); // Prevent default anchor behavior
+              e.preventDefault();
               navigate('/');
             }}
           >
@@ -67,13 +75,13 @@ const Navbar = () => {
             <>
               {isAdmin && (
                 <>
-                  {/* <Link
+                  <Link
                     to="/create-room"
                     className="flex items-center hover:text-yellow-300 transition duration-300 text-lg"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <FaPlusCircle className="mr-1" /> Create Room
-                  </Link> */}
+                  </Link>
                   <Link
                     to="/admin-dashboard"
                     className="flex items-center hover:text-yellow-300 transition duration-300 text-lg"
@@ -120,6 +128,7 @@ const Navbar = () => {
           {isMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
       </div>
+
       {isMenuOpen && (
         <motion.div
           initial={{ height: 0 }}

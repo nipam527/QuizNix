@@ -6,18 +6,21 @@ import { motion } from 'framer-motion';
 const JoinRoom = () => {
   const [code, setCode] = useState('');
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const joinRoom = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.get(`/api/room/join/${code}`, {
+      await axios.get(`${API_BASE_URL}/api/room/join/${code}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       navigate(`/quiz/${code}`);
     } catch (error) {
       console.error('Failed to join room:', error);
     }
-  };
+  
+};
+
 
   return (
     <motion.div

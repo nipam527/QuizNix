@@ -84,53 +84,62 @@
 //   );
 // };
 
-// export default Login;
-
-import React, { useState } from 'react';
+// export default Login;import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
-import { sendEmailNotification } from '../utils/sendEmail'; 
-
+import { useState } from 'react';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
+  const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`;
 
   const sendLoginEmail = async () => {
-  if (!email) {
-    console.error('Email is empty, cannot send login notification');
-    return;
-  }
+    if (!email) {
+      console.error('Email is empty, cannot send login notification');
+      return;
+    }
 
-  try {
-    await emailjs.send(
-      'service_shbrpf6',
-      'template_l1uf5ht',
-      {
-        to_email: email,
-        user_email: email,
-        message: `Login successful for: ${email}`,
-        subject: 'New Login Notification'
-      },
-      'nTg0KLD5lZ_i7FmM-'
-    );
-    console.log('Login email sent successfully');
-  } catch (err) {
-    console.error('Email send error:', err);
-  }
-};
-
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          to_email: email,
+          user_email: email,
+          message: `Login successful for: ${email}`,
+          subject: 'New Login Notification',
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+      console.log('Login email sent successfully');
+    } catch (err) {
+      console.error('Email send error:', err);
+    }
+  };
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      setErrorMsg('Please enter both email and password.');
+      return;
+    }
+
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/login', { email, password });
+      setLoading(true);
+      setErrorMsg('');
+      const res = await axios.post(API_URL, { email, password });
       localStorage.setItem('token', res.data.token);
-      await sendLoginEmail(); // Send login email
+      await sendLoginEmail();
       navigate('/');
     } catch (error) {
-      console.error(error.response?.data?.error || 'Login failed');
+      const message = error.response?.data?.error || 'Login failed. Please try again.';
+      setErrorMsg(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,37 +164,53 @@ const Login = () => {
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl font-bold text-center mb-8"
+          className="text-3xl font-bold text-center mb-6"
         >
           Login
         </motion.h1>
 
-        <motion.input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          className="w-full p-3 mb-5 bg-black border border-yellow-400 rounded-lg text-yellow-400 placeholder-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition duration-300"
-          whileFocus={{ scale: 1.03 }}
-        />
+        {errorMsg && (
+          <p className="text-red-500 text-sm text-center mb-4">{errorMsg}</p>
+        )}
 
-        <motion.input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          className="w-full p-3 mb-6 bg-black border border-yellow-400 rounded-lg text-yellow-400 placeholder-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition duration-300"
-          whileFocus={{ scale: 1.03 }}
-        />
-
-        <motion.button
-          onClick={handleLogin}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-full mb-4 bg-yellow-400 text-black font-semibold py-3 rounded-lg transition duration-300 hover:bg-yellow-500"
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
         >
-          Login
-        </motion.button>
+          <motion.input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value.trim())}
+            placeholder="Email"
+            className="w-full p-3 mb-5 bg-black border border-yellow-400 rounded-lg text-yellow-400 placeholder-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition duration-300"
+            whileFocus={{ scale: 1.03 }}
+          />
+
+          <motion.input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full p-3 mb-6 bg-black border border-yellow-400 rounded-lg text-yellow-400 placeholder-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition duration-300"
+            whileFocus={{ scale: 1.03 }}
+          />
+
+          <motion.button
+            type="submit"
+            disabled={loading}
+            whileHover={{ scale: loading ? 1 : 1.05 }}
+            whileTap={{ scale: loading ? 1 : 0.95 }}
+            className={`w-full mb-4 font-semibold py-3 rounded-lg transition duration-300 ${
+              loading
+                ? 'bg-yellow-300 text-black cursor-not-allowed'
+                : 'bg-yellow-400 text-black hover:bg-yellow-500'
+            }`}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </motion.button>
+        </form>
 
         <motion.button
           onClick={goToRegister}
@@ -201,6 +226,8 @@ const Login = () => {
 };
 
 export default Login;
+
+
 
 
 // Login.jsx

@@ -7,10 +7,11 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleRegister = async () => {
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/register', { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/auth/register`, { email, password });
       localStorage.setItem('token', res.data.token);
       navigate('/');
     } catch (error) {

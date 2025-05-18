@@ -31,19 +31,26 @@ const Result = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen bg-black text-yellow-400 flex flex-col items-center justify-center p-4"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className="min-h-screen bg-black text-yellow-400 flex flex-col items-center justify-center p-6"
     >
-      <h1 className="text-3xl font-bold mb-4">Quiz Results</h1>
-      <p className="text-xl">Your Score: {score} / {total}</p>
-      <p className="text-lg mt-4">Percentage: {((score / total) * 100).toFixed(2)}%</p>
+      <div className="bg-yellow-400 text-black rounded-2xl shadow-lg px-8 py-6 w-full max-w-md text-center">
+        <h1 className="text-4xl font-extrabold mb-4 tracking-wide">Quiz Results</h1>
+        <p className="text-2xl font-semibold mb-2">
+          Score: <span className="font-bold">{score}</span> / {total}
+        </p>
+        <p className="text-xl font-medium mt-2">
+          Percentage: <span className="font-bold">{((score / total) * 100).toFixed(2)}%</span>
+        </p>
+      </div>
     </motion.div>
   );
 };
 
 export default Result;
+
 
 
 

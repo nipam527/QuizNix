@@ -12,18 +12,24 @@ exports.createRoom = async (req, res) => {
   }
 };
 
+
+// Update allowed users for a room by room code
 exports.updateAllowedUsers = async (req, res) => {
   try {
     const { code } = req.params;
     const { allowedUsers } = req.body;
+
     const room = await Room.findOne({ code });
-    if (!room) return res.status(404).json({ error: 'Room not found' });
+    if (!room) {
+      return res.status(404).json({ error: 'Room not found' });
+    }
 
     room.allowedUsers = allowedUsers;
     await room.save();
 
-    res.json({ message: 'Allowed users updated' });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update allowed users' });
+    res.json({ message: 'Allowed users updated successfully' });
+  } catch (error) {
+    console.error('Error updating allowed users:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
