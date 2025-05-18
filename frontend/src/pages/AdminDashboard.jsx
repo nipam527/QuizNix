@@ -632,7 +632,7 @@ const AdminDashboard = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="relative min-h-screen bg-black text-yellow-400 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 overflow-hidden"
+      className="relative min-h-screen bg-black text-yellow-400 px-4 sm:px-6 lg:px-8 py-12 sm:py-16 overflow-hidden mt-10"
     >
       {/* Foreground Scroll-Triggered Particles */}
       <motion.div className="absolute inset-0 pointer-events-none" style={{ y: y1, opacity }}>

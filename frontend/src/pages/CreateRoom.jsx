@@ -330,7 +330,7 @@ const CreateRoom = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-black text-yellow-400 p-6 flex flex-col items-center justify-center"
+      className="min-h-screen bg-black text-yellow-400 p-6 flex flex-col items-center justify-center mt-24"
       role="main"
       aria-label="Create Quiz Room"
     >
